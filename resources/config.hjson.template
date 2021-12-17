@@ -1,0 +1,17 @@
+{
+    code_diff:{
+        url:http://127.0.0.1:8085
+        code_diff_svn_jira_api:/api/code/diff/svn/jira/list
+        code_diff_svn_date_api:/api/code/diff/svn/date/list
+    }
+
+    # 各系统的信息
+    sys_info:{
+        bpc:{
+            vcs_type:svn
+            vcs_url:http://.../bpc
+            vcs_username:username
+            vcs_password:password
+        }
+    }
+}
