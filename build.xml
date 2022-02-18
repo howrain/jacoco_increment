@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="vmuser" xmlns:jacoco="antlib:org.jacoco.ant" default="jacoco">
+    <!--Jacoco的安装路径-->
+    <property name="jacocoantPath" value="${jacocoantPath}"/>
+ 
+    <!--最终生成.exec文件的路径，Jacoco就是根据这个文件生成最终的报告的-->
+    <property name="jacocoexecPath" value="${jacocoexecPath}"/>
+
+    <!-- <property name="jacocoexecPath" value="./jacoco.exec"/> -->
+    <!--生成覆盖率报告的路径，直接放在tomct下面，外界直接访问-->
+    <!-- <property name="reportfolderPath" value="./report"/> -->
+ 
+    <!--远程tomcat服务的ip地址-->
+    <property name="server_ip" value="${server_ip}"/>
+ 
+    <!--前面配置的远程tomcat服务打开的端口，要跟上面配置的一样-->
+    <!--这个端口有别于tomcat的端口，相当于是嵌在tomcat里的监视器-->
+    <property name="server_port" value="${server_port}"/>
+
+    <property name="reportfolderPath" value="${reportfolderPath}"/>
+    <property name="srcPath" value="${srcPath}"/>
+    <property name="classPath" value="${classPath}"/>
+ 
+    <!--让ant知道去哪儿找Jacoco-->
+    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+        <classpath path="${jacocoantPath}" />
+    </taskdef>
+    
+
+    <!--dump_clear任务:
+        重新生成jacocoexec，将清空之前所有的覆盖率-->
+    <target name="dump_clear">
+        <jacoco:dump address="${server_ip}" reset="true" destfile="${jacocoexecPath}" port="${server_port}" append="false"/>
+    </target>
+
+    <!--dump任务:
+        根据前面配置的ip地址，和端口号，
+        访问目标tomcat服务，并生成.exec文件。-->
+    <target name="dump">
+        <jacoco:dump address="${server_ip}" reset="false" destfile="${jacocoexecPath}" port="${server_port}" append="true"/>
+    </target>
+    
+    <target name="report">
+        <delete dir="${reportfolderPath}" />
+        <mkdir dir="${reportfolderPath}" />
+    
+        <jacoco:report>
+          <executiondata>
+            <file file="${jacocoexecPath}" />
+          </executiondata>
+    
+          <structure name="JaCoCo Report">
+          <group name="ad">
+            <classfiles>
+              <fileset dir="${classPath}" />
+            </classfiles>
+            <sourcefiles encoding="utf-8">
+              <fileset dir="${srcPath}" />
+            </sourcefiles>
+          </group>
+          </structure>
+          <xml destfile="${reportfolderPath}/jacoco.xml" encoding="utf-8" />
+        </jacoco:report>
+      </target>
+
+
+ 
+</project>
